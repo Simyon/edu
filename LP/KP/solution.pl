@@ -7,8 +7,26 @@
 % father(child, father)
 father(X, Y) :- male(Y), child(X, Y).
 
+% grandfather(person, grandfather)
+grandfather(X, Y) :- child(X, Z), father(Z, Y).
+
+% greatgrandfather(person, greatgrandfather)
+greatgrandfather(X, Y) :- child(X, Z), grandfather(Z, Y).
+
+% greatgreatgrandfather(person, greatgreatgrandfather)
+greatgreatgrandfather(X, Y) :- child(X, Z), greatgrandfather(Z, Y).
+
 % mother(child, mother)
 mother(X, Y) :- female(Y), child(X, Y).
+
+% grandmother(person, grandmother)
+grandmother(X, Y) :- child(X, Z), mother(Z, Y).
+
+% greatgrandmother(person, greatgrandmother)
+greatgrandmother(X, Y) :- child(X, Z), grandmother(Z, Y).
+
+% greatgreatgrandmother(person, greatgreatgrandmother)
+greatgreatgrandmother(X, Y) :- child(X, Z), greatgrandmother(Z, Y).
 
 % brother(person, brother).
 brother(X, Y) :- male(Y), child(Y, Z), child(X, Z), X \= Y.
@@ -16,17 +34,29 @@ brother(X, Y) :- male(Y), child(Y, Z), child(X, Z), X \= Y.
 % sister(person, sister).
 sister(X, Y) :- female(Y), child(Y, Z), child(X, Z), X \= Y.
 
-% grandfather(person, grandfather)
-grandfather(X, Y) :- child(X, Z), father(Z, Y).
-
-% grandmother(person, grandmother)
-grandmother(X, Y) :- child(X, Z), mother(Z, Y).
-
 % son(parent, son)
 son(X, Y) :- male(Y), child(Y, X).
 
+% grandson(granddad, grandson)
+grandson(X, Y) :- child(Z, X), son(Z, Y).
+
+% greatgrandson(greatgranddad, greatgrandson)
+greatgrandson(X, Y) :- child(Z, X), grandson(Z, Y).
+
+% greatgreatgrandson(greatgreatgranddad, greatgreatgrandson)
+greatgreatgrandson(X, Y) :- child(Z, X), greatgrandson(Z, Y).
+
 % daughter(parent, daughter)
 daughter(X, Y) :- female(Y), child(Y, X).
+
+% granddaughter(granddaughter, granddaughter)
+granddaughter(X, Y) :- child(Z, X), daughter(Z, Y).
+
+% greatgranddaughter(greatgranddaughter, greatgranddaughter)
+greatgranddaughter(X, Y) :- child(Z, X), granddaughter(Z, Y).
+
+% greatgreatgranddaughter(greatgreatgranddaughter, greatgreatgranddaughter)
+greatgreatgranddaughter(X, Y) :- child(Z, X), greatgranddaughter(Z, Y).
 
 % husband(wife, husband)
 husband(X, Y) :- wife(Y, X).
@@ -40,6 +70,12 @@ uncle(X, Y) :- child(X, Z), brother(Z, Y).
 % aunt(person, aunt)
 aunt(X, Y) :- child(X, Z), sister(Z, Y).
 
+% nephew(person, nephew)
+nephew(X, Y) :- male(Y), child(Y, Z), child(Z, W), child(X, W), Z \= X.
+
+% niece(person, niece)
+niece(X, Y) :- female(Y), child(Y, Z), child(Z, W), child(X, W), Z \= X.
+
 % cousin(person, cousin)
 cousin(X, Y) :- uncle(X, Z), child(Y, Z).
 cousin(X, Y) :- aunt(X, Z), child(Y, Z).
@@ -50,17 +86,29 @@ sister_in_law(X, Y) :- female(X), female(Y), husband(X, Z), sister(Z, Y).
 % Задание 4
 % Степень родства
 relative(father, X, Y) :- father(X, Y).
+relative(grandfather, X, Y) :- grandfather(X, Y).
+relative(greatgrandfather, X, Y) :- greatgrandfather(X, Y).
+relative(greatgreatgrandfather, X, Y) :- greatgreatgrandfather(X, Y).
 relative(mother, X, Y) :-  mother(X, Y).
+relative(grandmother, X, Y) :- grandmother(X, Y).
+relative(greatgrandmother, X, Y) :- greatgrandmother(X, Y).
+relative(greatgreatgrandmother, X, Y) :- greatgreatgrandmother(X, Y).
 relative(brother, X, Y) :- brother(X, Y).
 relative(sister, X, Y) :- sister(X, Y).
 relative(son, X, Y) :- son(X, Y).
+relative(grandson, X, Y) :- grandson(X, Y).
+relative(greatgrandson, X, Y) :- greatgrandson(X, Y).
+relative(greatgreatgrandson, X, Y) :- greatgreatgrandson(X, Y).
 relative(daughter, X, Y) :- daughter(X, Y).
-relative(grandfather, X, Y) :- grandfather(X, Y).
-relative(grandmother, X, Y) :- grandmother(X, Y).
+relative(granddaughter, X, Y) :- granddaughter(X, Y).
+relative(greatgranddaughter, X, Y) :- greatgranddaughter(X, Y).
+relative(greatgreatgranddaughter, X, Y) :- greatgreatgranddaughter(X, Y).
 relative(husband, X, Y) :- husband(X, Y).
 relative(wife, X, Y) :- wife(X, Y).
 relative(uncle, X, Y) :- uncle(X, Y).
 relative(aunt, X, Y) :- aunt(X, Y).
+relative(nephew, X, Y) :- nephew(X, Y).
+relative(niece, X, Y) :- niece(X, Y).
 relative(cousin, X, Y) :- cousin(X, Y).
 relative(sister_in_law, X, Y) :- sister_in_law(X, Y).
 
