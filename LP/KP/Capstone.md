@@ -144,6 +144,7 @@ Y = 'Елизавета Австрийская'
 > 
 > question([whose, mother, is, 'Иоанна Австрийская', '?']). Иоанна
 > Австрийская is mother Анна Ягеллонка.
+> 
 > question([whose, greatgreatgranddaughter, is, 'Иоанна Австрийская', '?']).
 > Иоанна Австрийская is greatgreatgranddaughter Анна Мария Орлеанская.
 
