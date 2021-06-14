@@ -149,11 +149,33 @@ split(List, Part1, Part2, Part3) :- append(Part1, TMP, List), append(Part2, Part
 % Набор вопросов
 questions_list(['How many', 'Who is', 'Is', 'how many', 'who is', 'is']).
 
-% Перевод множественных в единственные
+% Перевод множественных в единственные% Перевод множественных в единственные
+plural('greatgreatgrandfathers', 'greatgreatgrandfather').
+plural('greatgrandfathers', 'greatgrandfather').
+plural('grandfathers', 'grandfather').
+plural('greatgreatgrandmothers', 'greatgreatgrandmother').
+plural('greatgrandmothers', 'greatgrandmother').
+plural('grandmothers', 'grandmother').
+
 plural('brothers', 'brother').
 plural('sisters', 'sister').
+
 plural('sons', 'son').
+plural('grandsons', 'grandson').
+plural('greatgrandsons', 'greatgrandson').
+plural('greatgreatgrandsons', 'greatgreatgrandson').
 plural('daughters', 'daughter').
+plural('granddaughters', 'granddaughter').
+plural('greatgranddaughters', 'greatgranddaughter').
+plural('greatgreatgranddaughters', 'greatgreatgranddaughter').
+
+plural('uncles', 'uncle').
+plural('aunts', 'aunt').
+
+plural('nephews', 'nephew').
+plural('nieces', 'niece').
+
+plural('cousins', 'cousin').
 
 % Есть ли имя в базе
 check_name(Name) :- male(Name).
