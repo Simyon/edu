@@ -183,7 +183,7 @@ ask(X, Y) :- check_phrase(X, DS), analyze(DS, Y).
 check(Relationship, Name1, Name2) :- move(Name2, Name1, Relationship).
 
 % "Is" вопрос
-analyze(DS, _) :- DS = [Name1, Name2, Relative], check(Relate, Name1, Name2).
+analyze(DS, _) :- DS = [Name1, Name2, Relate], check(Relate, Name1, Name2).
 
 % "Who is" вопрос
 analyze(DS, Y) :- DS = [Name, Relationship], check_name(Name), check_relative(Relationship),
