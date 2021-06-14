@@ -85,110 +85,110 @@ sister_in_law(X, Y) :- female(X), female(Y), husband(X, Z), sister(Z, Y).
 
 % Задание 4
 % Степень родства
-relative(father, X, Y) :- father(X, Y).
-relative(grandfather, X, Y) :- grandfather(X, Y).
-relative(greatgrandfather, X, Y) :- greatgrandfather(X, Y).
-relative(greatgreatgrandfather, X, Y) :- greatgreatgrandfather(X, Y).
-relative(mother, X, Y) :-  mother(X, Y).
-relative(grandmother, X, Y) :- grandmother(X, Y).
-relative(greatgrandmother, X, Y) :- greatgrandmother(X, Y).
-relative(greatgreatgrandmother, X, Y) :- greatgreatgrandmother(X, Y).
-relative(brother, X, Y) :- brother(X, Y).
-relative(sister, X, Y) :- sister(X, Y).
-relative(son, X, Y) :- son(X, Y).
-relative(grandson, X, Y) :- grandson(X, Y).
-relative(greatgrandson, X, Y) :- greatgrandson(X, Y).
-relative(greatgreatgrandson, X, Y) :- greatgreatgrandson(X, Y).
-relative(daughter, X, Y) :- daughter(X, Y).
-relative(granddaughter, X, Y) :- granddaughter(X, Y).
-relative(greatgranddaughter, X, Y) :- greatgranddaughter(X, Y).
-relative(greatgreatgranddaughter, X, Y) :- greatgreatgranddaughter(X, Y).
-relative(husband, X, Y) :- husband(X, Y).
-relative(wife, X, Y) :- wife(X, Y).
-relative(uncle, X, Y) :- uncle(X, Y).
-relative(aunt, X, Y) :- aunt(X, Y).
-relative(nephew, X, Y) :- nephew(X, Y).
-relative(niece, X, Y) :- niece(X, Y).
-relative(cousin, X, Y) :- cousin(X, Y).
-relative(sister_in_law, X, Y) :- sister_in_law(X, Y).
+% Итеративный поиск 
+relate(X, Y) :- for(Cur_Depth, 1, 2), iter(X, Y, Path, Cur_Depth), print_path(Path).
 
+% Поиск с лимитом
+iter(Start, Finish, Path, DepthLimit) :- path_iter([Start], Finish, Path, DepthLimit).
 
-perm(X, Y) :- relative(_, X, Y).
-prlng([X|T], [Y, X|T]) :- perm(X, Y), not(member(Y, [X|T])).
+% Результат на текущей глубине
+path_iter([Finish | Path], Finish, [Finish | Path], 0).
 
-bfs([[H|T]|_], H, [H|T]).
-bfs([H|T], RES, TREE) :- 
-    findall(W, prlng(H, W), TREES), 
-    append(T, TREES, NEWTREES), !, bfs(NEWTREES, RES, TREE).
+path_iter(Cur_Path, Finish, Path, Depth) :- Depth > 0, prolong(Cur_Path, New_Path),
+                                                        New_Depth is Depth - 1,
+                                                        path_iter(New_Path, Finish, Path, New_Depth).
 
-find([_], R, R).
-find([X,Y|T], R, REL) :- 
-    relative(RE, X, Y), 
-    find([Y|T], 
-    [RE|R], REL).
+prolong([Cur_Pos | Tail], [New_Pos, Cur_Pos | Tail]) :- move(Cur_Pos, New_Pos, _), 
+                                                    not(member(New_Pos, [Cur_Pos | Tail])).
 
-relate(REL, X, Y) :- 
-    bfs([[X]], Y, R), 
-    reverse(R, RE), 
-    find(RE, [], NEWREL), 
-    reverse(NEWREL, REL), 
-    N is 0.
+for(A, A, _).
+for(X, A, B) :- A < B, A1 is A + 1, for(X, A1, B).
 
-% Задание 5
+% Все возможные расстановки для алгоритма
+move(Cur, Next, greatgreatgrandfather) :- greatgreatgrandfather(Cur, Next).
+move(Cur, Next, greatgrandfather) :- greatgrandfather(Cur, Next).
+move(Cur, Next, grandfather) :- grandfather(Cur, Next).
+move(Cur, Next, father) :- father(Cur, Next).
+move(Cur, Next, greatgreatgrandmother) :- greatgreatgrandmother(Cur, Next).
+move(Cur, Next, greatgrandmother) :- greatgrandmother(Cur, Next).
+move(Cur, Next, grandmother) :- grandmother(Cur, Next).
+move(Cur, Next, mother) :- mother(Cur, Next).
+move(Cur, Next, son) :- son(Cur, Next).
+move(Cur, Next, grandson) :- grandson(Cur, Next).
+move(Cur, Next, greatgrandson) :- greatgreatgrandson(Cur, Next).
+move(Cur, Next, greatgreatgrandson) :- greatgreatgrandson(Cur, Next).
+move(Cur, Next, daughter) :- daughter(Cur, Next).
+move(Cur, Next, granddaughter) :- granddaughter(Cur, Next).
+move(Cur, Next, greatgranddaughter) :- greatgreatgranddaughter(Cur, Next).
+move(Cur, Next, greatgreatgranddaughter) :- greatgreatgranddaughter(Cur, Next).
+move(Cur, Next, brother) :- brother(Cur, Next).
+move(Cur, Next, sister) :- sister(Cur, Next).
+move(Cur, Next, uncle) :- uncle(Cur, Next).
+move(Cur, Next, aunt) :- aunt(Cur, Next).
+move(Cur, Next, nephew) :- nephew(Cur, Next).
+move(Cur, Next, niece) :- niece(Cur, Next).
+move(Cur, Next, cousin) :- cousin(Cur, Next).
+move(Cur, Next, husband) :- husband(Cur, Next).
+move(Cur, Next, wife) :- wife(Cur, Next).
+move(Cur, Next, sister_in_law) :- sister_in_law(Cur, Next).
+
+% Вывод результат 
+print_path([Head1, Head2]) :- move(Head2, Head1, Relationship), !, write(Relationship), nl.
+print_path([Head1, Head2 | Tail]) :- move(Head2, Head1, Relationship), !, write(Relationship), write(' of '),
+                                        print_path([Head2 | Tail]).
+
+% TASK 5
 % Естественно-языковой интерфейс
-word(X) :- member(X, [whose, "Whose"]).
-have(X) :- member(X, [is, "Is"]).
-have_lst([X], REL) :- member(X, [REL]).
-question_word(X) :-  member(X, ['?']).
-prev_set(NAME) :- nb_setval(name, NAME).
-word_prev(X) :- member(X,["His",his,"Him",him,"Her",her,"She",she,"He",he]),!.
-to_word(X) :- member(X, ["to", to]).
+
+% Разделение списка на части
+split(List, Part1, Part2) :- append(Part1, Part2, List), not(length(Part1, 0)), not(length(Part2, 0)).
+split(List, Part1, Part2, Part3) :- append(Part1, TMP, List), append(Part2, Part3, TMP),
+                                    not(length(Part1, 0)), not(length(Part2, 0)), not(length(Part3, 0)).
 
 
-%1
-question(L) :- 
-    L = [IS, NAME_0, REL, NAME_1, Q], 
-    have(IS), 
-    relate(X, NAME_0, NAME_1),
-    !, 
-    have_lst(X, REL),
-    question_word(Q), 
-    write(NAME_0),  
-    write(" is "),  
-    write(REL),  
-    write(" "),  
-    write(NAME_1), 
-    write(".").
+% Набор вопросов
+questions_list(['How many', 'Who is', 'Is', 'how many', 'who is', 'is']).
 
-%2
-question(L) :- 
-    L = [WHOSE, REL, IS, NAME, Q], 
-    word(WHOSE), 
-    relative(REL, NAME, ANS), 
-    have(IS), 
-    question_word(Q),
-    write(NAME), 
-    write(" is "),  
-    write(REL), 
-    write(" "), 
-    write(ANS), 
-    write("."), 
-    prev_set(NAME), 
-    nl.
+% Перевод множественных в единственные
+plural('brothers', 'brother').
+plural('sisters', 'sister').
+plural('sons', 'son').
+plural('daughters', 'daughter').
 
-%3
-question(L) :- 
-    L = [NAME_0, REL, TO, NAME_1, Q], 
-    word_prev(NAME_0), 
-    nb_getval(name, NAME_2), 
-    relate(X, NAME_2, NAME_1),
-    !,
-    have_lst(X, REL),
-    to_word(TO), 
-    question_word(Q), 
-    write(NAME_2),  
-    write(" is "),  
-    write(REL),  
-    write(" "),  
-    write(NAME_1), 
-    write(".").
+% Есть ли имя в базе
+check_name(Name) :- male(Name).
+check_name(Name) :- female(Name).
+
+check_relative(Relationship) :- move(_, _, Relationship), !.
+check_question(Question) :- questions_list(List), member(Question, List).
+
+% Разделение фразы на вопрос и семантическую группу
+check_phrase([Question | Other], X) :- check_question(Question), check_semantic_part(Other, X).
+
+% Вопросы "How much"
+check_semantic_part([Head | Tail], X) :- plural(Head, Head1), check_relative(Head1), split(Tail, _, [Part2 | _]),
+                                            check_name(Part2), !, append([Head1], [Part2], X).
+
+% Вопросы "Is" 
+check_semantic_part([Head | Tail], X) :- check_name(Head), split(Tail, [Part1, "'s" | _], [Part2 | _]),
+                                        check_name(Part1), check_relative(Part2), !,
+                                        append([Head], [Part1], Tmp), append(Tmp, [Part2], X).
+
+% Вопросы "Who is" 
+check_semantic_part([Head | Tail], X) :- check_name(Head), split(Tail, _, [Part2 | _]), check_relative(Part2),
+                                            !, append([Head], [Part2], X).
+
+ask(X, Y) :- check_phrase(X, DS), analyze(DS, Y).
+
+check(Relationship, Name1, Name2) :- move(Name2, Name1, Relationship).
+
+% "Is" вопрос
+analyze(DS, _) :- DS = [Name1, Name2, Relative], check(Relative, Name1, Name2).
+
+% "Who is" вопрос
+analyze(DS, Y) :- DS = [Name, Relationship], check_name(Name), check_relative(Relationship),
+                    check(Relationship, Y, Name).
+
+% "How many" вопрос
+analyze(DS, Y) :- DS = [Relationship, Name], check_name(Name), check_relative(Relationship),
+                setof(X, check(Relationship, X, Name), List), length(List, Y).
